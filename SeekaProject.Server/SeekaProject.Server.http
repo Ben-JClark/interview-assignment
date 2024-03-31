@@ -1,0 +1,6 @@
+@SeekaProject.Server_HostAddress = http://localhost:5041
+
+GET {{SeekaProject.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

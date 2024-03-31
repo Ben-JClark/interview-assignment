@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeekaProject.Server", "SeekaProject.Server\SeekaProject.Server.csproj", "{D360700E-FA2A-41A5-8C06-F1AD30F6BD46}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "seekaproject.client", "seekaproject.client\seekaproject.client.esproj", "{4E857B5E-0299-42F2-8E72-2FFB527CC0A3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D360700E-FA2A-41A5-8C06-F1AD30F6BD46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D360700E-FA2A-41A5-8C06-F1AD30F6BD46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D360700E-FA2A-41A5-8C06-F1AD30F6BD46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D360700E-FA2A-41A5-8C06-F1AD30F6BD46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E857B5E-0299-42F2-8E72-2FFB527CC0A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E857B5E-0299-42F2-8E72-2FFB527CC0A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E857B5E-0299-42F2-8E72-2FFB527CC0A3}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{4E857B5E-0299-42F2-8E72-2FFB527CC0A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E857B5E-0299-42F2-8E72-2FFB527CC0A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E857B5E-0299-42F2-8E72-2FFB527CC0A3}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A7C37EB0-2892-45A2-91F0-FA27FC1C83AE}
+	EndGlobalSection
+EndGlobal
