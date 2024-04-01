@@ -65,7 +65,7 @@ namespace SeekaProject.Server.Controllers
                         Product product = new Product { Name = Name, Description = Description, Price = Price };
                         _context.Add(product);
                         await _context.SaveChangesAsync();
-                        return NoContent();
+                        return Created();
                     }
                     return BadRequest("Invalid Product Description. Description must be provided");
                 }
@@ -82,18 +82,18 @@ namespace SeekaProject.Server.Controllers
         {
             if(id >= 0)
             {
-                if (ProductExists(id))
+                if (Price >= 0)
                 {
-                    if (Price >= 0)
+                    if (ProductExists(id))
                     {
                         Product product = new Product { Id = id, Name = Name, Description = Description, Price = Price };
                         _context.Update(product);
                         await _context.SaveChangesAsync();
-                        return NoContent();
+                        return Ok();
                     }
-                    return BadRequest("Invalid Product Price. Price must be a positive number");
+                    return NotFound("We couldn't find a product with that id");
                 }
-                return NotFound("We couldn't find a product with that id");
+                return BadRequest("Invalid Product Price. Price must be a positive number");
             }
             return BadRequest("Invalid Product Id. Id must be a positive number");
         }
@@ -110,7 +110,7 @@ namespace SeekaProject.Server.Controllers
                 {
                     _context.Product.Remove(product);
                     await _context.SaveChangesAsync();
-                    return NoContent();
+                    return Ok();
                 }
                 return NotFound("We couldn't find a product with that id");
             }
