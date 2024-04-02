@@ -14,5 +14,10 @@ namespace SeekaProject.Server.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
+
+        // Foreign key
+        public int CategoryId { get; set; }
+        // Naviagation property
+        public Category Category { get; set; } = null!;
     }
 }

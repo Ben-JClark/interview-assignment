@@ -26,8 +26,19 @@ namespace SeekaProject.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var products = await _context.Product.ToListAsync();
-            if (products.Count > 0)
+            // Convert the Product to Data Transfer Object to additionaly send the Category Name 
+            var products = from p in _context.Product
+                           select new ProductDto()
+                           {
+                               Id = p.Id,
+                               Name = p.Name,
+                               Description = p.Description,
+                               Price = p.Price,
+                               CategoryId = p.CategoryId,
+                               CategoryName = p.Category.Name
+                           };
+
+            if (products.Count() > 0)
             {
                 return Ok(products);
             }
@@ -41,10 +52,20 @@ namespace SeekaProject.Server.Controllers
         {
             if(id > 0)
             {
-                var product = await _context.Product.FindAsync(id);
-                if (product != null)
+                var p = await _context.Product
+                    .Include(p => p.Category)
+                    .FirstOrDefaultAsync(p => p.Id == id);
+                if (p != null)
                 {
-                    return Ok(product);
+                    ProductDto productDto = new ProductDto() { 
+                        Id = p.Id, 
+                        Name = p.Name, 
+                        Description = p.Description, 
+                        Price = p.Price, 
+                        CategoryId = p.CategoryId, 
+                        CategoryName = p.Category.Name
+                    };
+                    return Ok(productDto);
                 }
                 return NotFound("We couldn't find a product with that id");
             }

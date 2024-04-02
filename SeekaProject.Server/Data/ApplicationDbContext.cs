@@ -9,16 +9,27 @@ namespace SeekaProject.Server.Data
         {
         }
 
-        public DbSet<SeekaProject.Server.Models.Product> Product { get; set; }
+        public DbSet<Product> Product { get; set; }
+        public DbSet<Category> Category { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // seeding products
-            modelBuilder.Entity<SeekaProject.Server.Models.Product>().HasData(
-                new Product { Id = 1, Name = "Laptop", Description = "Portable computer", Price = 999.99M },
-                new Product { Id = 2, Name = "Smartphone", Description = "Handheld device", Price = 499.99M }
+            // Configuring one to many relationship without navigation from Category to Product
+            modelBuilder.Entity<Product>()
+                .HasOne(e => e.Category)
+                .WithMany()
+                .HasForeignKey(e => e.CategoryId)
+                .IsRequired();
+
+            // Seeding Category and Product tables
+            modelBuilder.Entity<Category>().HasData(
+                new Category { Id = 1, Name = "Technology" }
+                );
+            modelBuilder.Entity<Product>().HasData(
+                new Product { Id = 1, Name = "Laptop", Description = "Portable computer", Price = 999.99M, CategoryId=1 },
+                new Product { Id = 2, Name = "Smartphone", Description = "Handheld device", Price = 499.99M, CategoryId = 1 }
                 );
         }
     }
