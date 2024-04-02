@@ -25,7 +25,10 @@ namespace SeekaProject.Server.Data
 
             // Seeding Category and Product tables
             modelBuilder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "Technology" }
+                new Category { Id = 1, Name = "Technology" },
+                new Category { Id = 2, Name = "Produce" },
+                new Category { Id = 3, Name = "Furnature" },
+                new Category { Id = 4, Name = "Gardening" }
                 );
             modelBuilder.Entity<Product>().HasData(
                 new Product { Id = 1, Name = "Laptop", Description = "Portable computer", Price = 999.99M, CategoryId=1 },
