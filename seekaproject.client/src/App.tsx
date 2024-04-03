@@ -1,55 +1,94 @@
 import { useEffect, useState } from 'react';
+import axios from "axios";
+import ProductList from "./Components/ProductList";
+import ProductForm from "./Components/ProductForm";
 import './App.css';
 
-interface Forecast {
-    date: string;
-    temperatureC: number;
-    temperatureF: number;
-    summary: string;
-}
+export type Product = {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    categoryId: number;
+    categoryName: string;
+};
+
+export type FormData = {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    categoryId: number;
+};
+
+export type Category = {
+    id: number;
+    name: string;
+};
 
 function App() {
-    const [forecasts, setForecasts] = useState<Forecast[]>();
+    // List of all the products to be displayed on a table
+    const [products, setProducts] = useState<Product[] | null>(null);
+    // List of all the categories
+    const [categories, setCategories] = useState<Category[] | null>(null);
+    // Data entered from the ProductList
+    const [formData, fillFormData] = useState<FormData>({ id: -1, name: "", description: "", price: 0, categoryId: 1 });
+    // Hook that manages the state of ProductForm, if true, only POST operations can be performed, else PUT and DELETE
+    const [createState, setCreateState] = useState<boolean>(true);
 
+    /**
+     * Startup method calls
+     */
     useEffect(() => {
-        populateWeatherData();
+        getProducts();
+        getCategories();
     }, []);
 
-    const contents = forecasts === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-        : <table className="table table-striped" aria-labelledby="tabelLabel">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody>
-                {forecasts.map(forecast =>
-                    <tr key={forecast.date}>
-                        <td>{forecast.date}</td>
-                        <td>{forecast.temperatureC}</td>
-                        <td>{forecast.temperatureF}</td>
-                        <td>{forecast.summary}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>;
 
     return (
-        <div>
-            <h1 id="tabelLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
-            {contents}
+        <div className="container">
+            <div className="component">
+                <ProductList clearForm={clearForm} products={products} fillFormData={fillFormData} setCreateState={setCreateState} />
+            </div>
+            <div className="component">
+                <ProductForm getProducts={getProducts } clearForm={clearForm} categories={categories} formData={formData} fillFormData={fillFormData} createState={createState} />
+            </div>
         </div>
     );
 
-    async function populateWeatherData() {
-        const response = await fetch('weatherforecast');
-        const data = await response.json();
-        setForecasts(data);
+    /**
+     * Clear ProductForm and change its state to POST
+     * This should be called after a successful DELETE or PUT request
+     */
+    function clearForm() {
+        fillFormData({ id: -1, name: "", description: "", price: 0, categoryId: 1 });
+        setCreateState(true);
+    }
+
+    /**
+     * Fetch all the Products 
+     */
+    async function getProducts() {
+        try {
+            const response = await axios.get('http://localhost:5041/api/products');
+            const data: Product[] = response.data;
+            setProducts(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    /**
+     * Fetch all the categories 
+     */
+    async function getCategories() {
+        try {
+            const response = await axios.get('http://localhost:5041/api/categories');
+            const data: Category[] = response.data;
+            setCategories(data);
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
 

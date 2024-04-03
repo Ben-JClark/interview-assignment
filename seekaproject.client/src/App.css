@@ -17,3 +17,35 @@ th, td {
     padding-left: 1rem;
     padding-right: 1rem;
 }
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.component {
+    display: flex;
+    flex-direction: column;
+    border-style: groove;
+    padding: 20px;
+}
+
+.product_listing {
+    cursor: pointer;
+    border-style: solid;
+    border-color: black;
+}
+
+.product_listing:hover {
+    background-color: #ffd800;
+}
+
+.success_message {
+    color: #45c321;
+}
+
+.error_message {
+    color: #ce2a2a;
+}
