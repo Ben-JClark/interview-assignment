@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Any;
 using SeekaProject.Server.Data;
 using SeekaProject.Server.Models;
 
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SeekaProject.Server.Controllers
 {
@@ -35,6 +31,11 @@ namespace SeekaProject.Server.Controllers
                             p.CategoryId,
                             CategoryName = p.Category.Name
                         };
+
+            if (!query.Any())
+            {
+                return NoContent();
+            }
 
             return Ok(query);
         }
