@@ -23,51 +23,51 @@ namespace SeekaProject.Server.Controllers
         // Get all the products
         // GET: api/products
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
-            // Convert the Product to Data Transfer Object to additionaly send the Category Name 
-            var products = from p in _context.Product select new ProductDto()
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Description = p.Description,
-                Price = p.Price,
-                CategoryId = p.CategoryId,
-                CategoryName = p.Category.Name
-            };
+            var query = from p in _context.Product
+                        join c in _context.Category on p.CategoryId equals c.Id
+                        select new {
+                            p.Id,
+                            p.Name,
+                            p.Description,
+                            p.Price,
+                            p.CategoryId,
+                            CategoryName = p.Category.Name
+                        };
 
-            if (products.Count() > 0)
-            {
-                return Ok(products);
-            }
-            return NoContent();
+            return Ok(query);
         }
 
         // Get a single product by ID
         // GET api/products/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public IActionResult Get(int id)
         {
-            if(id > 0)
+            if(id <= 0)
             {
-                var p = await _context.Product
-                    .Include(p => p.Category)
-                    .FirstOrDefaultAsync(p => p.Id == id);
-                if (p != null)
-                {
-                    ProductDto productDto = new ProductDto() { 
-                        Id = p.Id, 
-                        Name = p.Name, 
-                        Description = p.Description, 
-                        Price = p.Price, 
-                        CategoryId = p.CategoryId, 
-                        CategoryName = p.Category.Name
-                    };
-                    return Ok(productDto);
-                }
+                return BadRequest("Invalid Product Id. Id must be greater than 0");
+            }
+
+            var query = from p in _context.Product
+                        join c in _context.Category on p.CategoryId equals c.Id
+                        where p.Id == id
+                        select new
+                        {
+                            p.Id,
+                            p.Name,
+                            p.Description,
+                            p.Price,
+                            p.CategoryId,
+                            CategoryName = p.Category.Name
+                        };
+
+            if (!query.Any())
+            {
                 return NotFound("We couldn't find a product with that id");
             }
-            return BadRequest("Invalid Product Id. Id must be greater than 0");
+
+            return Ok(query);
         }
 
         // Add a new product
@@ -75,86 +75,92 @@ namespace SeekaProject.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(string Name, string Description, decimal Price, int CategoryId)
         {
-            if (Price >= 0)
+            if (Price < 0)
             {
-                if (CategoryId > 0)
-                {
-                    if (CategoryExists(CategoryId))
-                    {
-                        Product product = new Product
-                        {
-                            Name = Name,
-                            Description = Description,
-                            Price = Price,
-                            CategoryId = CategoryId
-                        };
-                        _context.Add(product);
-                        await _context.SaveChangesAsync();
-                        return Created();
-                    }
-                    return BadRequest("We couldn't find a category with that id");
-                }
+                return BadRequest("Invalid Product Price. Price must be a positive number");
+            } 
+            if (CategoryId <= 0)
+            {
                 return BadRequest("Invalid Category Id. Id must be greater than 0");
             }
-            return BadRequest("Invalid Product Price. Price must be a positive number");
-        }
+            if (!CategoryExists(CategoryId))
+            {
+                return BadRequest("We couldn't find a category with that id");
+            }
 
+            Product product = new Product
+            {
+                Name = Name,
+                Description = Description,
+                Price = Price,
+                CategoryId = CategoryId
+            };
+
+            _context.Add(product);
+            await _context.SaveChangesAsync();
+            return Created();
+        }
 
         // Update an existsing product
         // PUT api/products/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, string Name, string Description, decimal Price, int CategoryId)
         {
-            if(id > 0)
+            if (id <= 0)
             {
-                if (CategoryId > 0)
-                {
-                    if (Price >= 0)
-                    {
-                        if (ProductExists(id))
-                        {
-                            if (CategoryExists(CategoryId))
-                            {
-                                Product product = new Product
-                                {
-                                    Id = id,
-                                    Name = Name,
-                                    Description = Description,
-                                    Price = Price,
-                                    CategoryId = CategoryId
-                                };
-                                _context.Update(product);
-                                await _context.SaveChangesAsync();
-                                return Ok();
-                            }
-                            return NotFound("We couldn't find a category with that id");
-                        }
-                        return NotFound("We couldn't find a product with that id");
-                    }
-                    return BadRequest("Invalid Product Price. Price must be a positive number");
-                }
+                return BadRequest("Invalid Product Id. Id must be greater than 0 number");
+            }
+            if (CategoryId <= 0)
+            {
                 return BadRequest("Invalid Category Id. Id must be greater than 0");
             }
-            return BadRequest("Invalid Product Id. Id must be greater than 0 number");
+            if (Price < 0)
+            {
+                return BadRequest("Invalid Product Price. Price must be a positive number");
+            }
+            if (!ProductExists(id))
+            {
+                return NotFound("We couldn't find a product with that id");
+            }
+            if (!CategoryExists(CategoryId))
+            {
+                return NotFound("We couldn't find a category with that id");
+            }
+
+            Product product = new Product
+            {
+                Id = id,
+                Name = Name,
+                Description = Description,
+                Price = Price,
+                CategoryId = CategoryId
+            };
+            _context.Update(product);
+            await _context.SaveChangesAsync();
+            return Ok();
         }
+    
 
         // Delete a product
         // DELETE api/products/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (id >= 0)
+            if (id <= 0)
             {
-                var product = await _context.Product.FindAsync(id);
-                if (product != null)
-                {
-                    _context.Product.Remove(product);
-                    await _context.SaveChangesAsync();
-                    return Ok();
-                }
+                return BadRequest("Invalid Product Id. Id must be a positive number");
+            }
+            
+            var product = await _context.Product.FindAsync(id);
+
+            if (product == null)
+            {
                 return NotFound("We couldn't find a product with that id");
             }
-            return BadRequest("Invalid Product Id. Id must be a positive number");
+
+            _context.Product.Remove(product);
+            await _context.SaveChangesAsync();
+            return Ok();
         }
 
         private bool ProductExists(int id)
