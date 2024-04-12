@@ -1,4 +1,4 @@
-# Interview Assignment
+# Product Website
 
 A CRUD application using ASP.NET Core, Entity Framework Core, MS LocalDB, and React.
 
