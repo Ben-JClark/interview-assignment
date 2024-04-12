@@ -1,6 +1,7 @@
 # Product Website
 
-A CRUD application using ASP.NET Core, Entity Framework Core, MS LocalDB, and React.
+A website that displays a list of products, the user can select a product and update or delete it. Users can also create a product.<br>
+Products also belong to a category, a list of available categories is provided when the user modifies or creates a product.<br>
 
 # How to Run
 
